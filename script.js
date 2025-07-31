@@ -3,6 +3,10 @@ let player1 = 0, player2 = 0;
 let player1_cell = null, player2_cell = null;
 let currentPlayer = 1; // 1 for P1, 2 for P2
 
+window.onload = () => {
+  resetGame(); // Reset everything when the page loads
+};
+
 // Color cells: even and odd
 game_cells.forEach(cell => {
   const number = parseInt(cell.textContent);
@@ -41,40 +45,36 @@ const diceSound = new Audio('./Project Images/dice-sound.mp3');
 diceImg.addEventListener("click", handleDiceRoll);
 
 function handleDiceRoll() {
-  diceImg.removeEventListener("click",handleDiceRoll);
+  diceImg.removeEventListener("click", handleDiceRoll);
   const result = document.getElementById("result");
   diceImg.classList.add("rolling");
-  diceSound.currentTime = 0; 
+  diceSound.currentTime = 0;
   diceSound.play();
-  setTimeout(()=>{
+  setTimeout(() => {
     const roll = Math.floor(Math.random() * 6) + 1;
     result.style.fontSize = "1.5rem";
-    diceImg.src = `./Project Images/dice${roll}.webp`; // Make sure dice1.png to dice6.png exist
+    diceImg.src = `./Project Images/dice${roll}.webp`;
     result.textContent = currentPlayer === 1 ? `Teddy : ${roll}` : `Duck : ${roll}`;
-    // Color animation
     result.style.color = result.style.color === "black" || result.style.color === "pink" ? "yellow" : "pink";
     diceImg.classList.remove("rolling");
     gameLogic(game_cells, roll, currentPlayer);
     diceImg.addEventListener("click", handleDiceRoll);
   }, 600);
-
 }
 
 function resetGame() {
-  // Reset players
   player1 = 0;
   player2 = 0;
   currentPlayer = 1;
+  player1_cell = null;
+  player2_cell = null;
 
-  // Remove player tokens
   document.querySelectorAll(".p1, .p2").forEach(token => token.remove());
 
-  // Reset dice
   const result = document.getElementById("result");
   result.textContent = "";
-  diceImg.src = "./Project Images/dice1.webp";
+  diceImg.src = "./Project Images/dice.webp";
 
-  // Reset board cells
   game_cells.forEach(cell => {
     const num = parseInt(cell.textContent);
     if (!isNaN(num)) {
@@ -83,12 +83,9 @@ function resetGame() {
     }
   });
 
-  // Re-apply snakes and ladders
   addSnakesAndLadders(game_cells);
 }
 
-
-// Game logic for each player
 function gameLogic(game_cells, rollValue, playerNum) {
   const snakes = { 99: 40, 92: 70, 87: 22, 65: 3, 47: 4, 34: 7 };
   const ladders = { 58: 82, 31: 73, 19: 43, 11: 66, 5: 46 };
@@ -107,7 +104,6 @@ function gameLogic(game_cells, rollValue, playerNum) {
       const text = cell.textContent.split("->")[0].trim();
       if (parseInt(text) === player1) {
         player1_cell = cell;
-
         const token = document.createElement("img");
         token.src = "./Project Images/teddy.jpg";
         token.alt = "P1";
@@ -115,16 +111,15 @@ function gameLogic(game_cells, rollValue, playerNum) {
         token.width = 30;
         token.height = 30;
         token.style.borderRadius = "50%";
-
         player1_cell.appendChild(token);
       }
     });
 
     if (player1 === 100) {
       setTimeout(() => {
-      alert("🎉 Teddy wins!");
-      resetGame();
-    }, 100);
+        alert("🎉 Teddy wins!");
+        resetGame();
+      }, 100);
     }
 
     currentPlayer = 2;
@@ -142,7 +137,6 @@ function gameLogic(game_cells, rollValue, playerNum) {
       const text = cell.textContent.split("->")[0].trim();
       if (parseInt(text) === player2) {
         player2_cell = cell;
-
         const token = document.createElement("img");
         token.src = "./Project Images/duck.webp";
         token.alt = "P2";
@@ -150,20 +144,17 @@ function gameLogic(game_cells, rollValue, playerNum) {
         token.width = 30;
         token.height = 30;
         token.style.borderRadius = "50%";
-
         player2_cell.appendChild(token);
       }
     });
 
     if (player2 === 100) {
       setTimeout(() => {
-      alert("🎉 Duck wins!");
-      resetGame();
-    }, 100);
-
+        alert("🎉 Duck wins!");
+        resetGame();
+      }, 100);
     }
 
     currentPlayer = 1;
   }
-
 }
