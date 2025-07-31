@@ -60,6 +60,32 @@ function handleDiceRoll() {
 
 }
 
+function resetGame() {
+  // Reset players
+  player1 = 0;
+  player2 = 0;
+  currentPlayer = 1;
+
+  // Remove player tokens
+  document.querySelectorAll(".p1, .p2").forEach(token => token.remove());
+
+  // Reset dice
+  const result = document.getElementById("result");
+  result.textContent = "";
+  diceImg.src = "./Project Images/dice1.webp";
+
+  // Reset board cells
+  game_cells.forEach(cell => {
+    const num = parseInt(cell.textContent);
+    if (!isNaN(num)) {
+      cell.textContent = num;
+      cell.style.backgroundColor = num % 2 === 0 ? "#363697" : "#864f7d";
+    }
+  });
+
+  // Re-apply snakes and ladders
+  addSnakesAndLadders(game_cells);
+}
 
 
 // Game logic for each player
@@ -97,7 +123,7 @@ function gameLogic(game_cells, rollValue, playerNum) {
     if (player1 === 100) {
       setTimeout(() => {
       alert("🎉 Teddy wins!");
-      location.reload();
+      resetGame();
     }, 100);
     }
 
@@ -132,7 +158,7 @@ function gameLogic(game_cells, rollValue, playerNum) {
     if (player2 === 100) {
       setTimeout(() => {
       alert("🎉 Duck wins!");
-      location.reload();
+      resetGame();
     }, 100);
 
     }
